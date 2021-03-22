@@ -8,7 +8,7 @@ import scala.util._
   * @author scalaprof
   */
 //noinspection ScalaDeprecation
-object MonadOps {
+object MonadOps extends App {
 
   def flatten[X](xyf: Future[Try[X]])(implicit executor: ExecutionContext): Future[X] = for (xy <- xyf; x <- asFuture(xy)) yield x
 
@@ -54,7 +54,16 @@ object MonadOps {
 
   // Hint: write as a for-comprehension, using the method sequence (above).
   // 6 points.
-  def mapFuture[X](xfs: Seq[Future[X]])(implicit executor: ExecutionContext): Seq[Future[Either[Throwable, X]]] = ??? // TO BE IMPLEMENTED
+  def mapFuture[X](xfs: Seq[Future[X]])(implicit executor: ExecutionContext): Seq[Future[Either[Throwable, X]]] =
+    for (xf<-xfs) yield sequence(xf)
+    //xfs map(sequence(_))
+//  import scala.concurrent.ExecutionContext.Implicits.global
+//
+//  val random=Random
+//  val xfs: Seq[Future[Int]] = Seq.fill(10)(Future{println("hello"); 1/random.nextInt(5)})
+//  val z: Seq[Future[Either[Throwable, Int]]]=mapFuture(xfs)
+//  println(z)
+  // TO BE IMPLEMENTED
 
   /**
     * Sequence the Seq of Try of X into a Try of Seq of X such that if any of the input elements is a Failure,
@@ -89,7 +98,11 @@ object MonadOps {
 
   // Hint: this one is a little more tricky. Remember what I mentioned about Either not being a pure monad -- it needs projecting
   // 7 points.
-  def sequence[X](xe: Either[Throwable, X]): Option[X] = ??? // TO BE IMPLEMENTED
+  def sequence[X](xe: Either[Throwable, X]): Option[X] =
+    xe match {
+      case Right(r) =>Option(r)
+      case Left(_) => None
+    }// TO BE IMPLEMENTED
 
   def zip[A, B](ao: Option[A], bo: Option[B]): Option[(A, B)] = for (a <- ao; b <- bo) yield (a, b)
 
