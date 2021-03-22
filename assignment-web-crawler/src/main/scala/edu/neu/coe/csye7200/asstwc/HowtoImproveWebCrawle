@@ -1,0 +1,19 @@
+Suggestions on How to Improve the Web Crawler:
+We can use some frameworks to improve the web crawler, like Akka Streams.
+Akka, a set of open-source libraries for designing scalable, resilient systems
+that span processor cores and networks, is an actor-based, parallel execution
+model and toolset for the JVM. Akka lets us tap into the full power of our CPU
+with its asynchronous (and multi-threaded) messaging model.
+
+The system will be divided into Actors. Each Actor represents a logical block
+that operates with a different data. Here are a few actors to model: Creating
+an HTTP get and fetching a webpage; analyzing chunks or bytes of the response
+as they stream in; spawning multiple “crawler” actors based on how many pages i have queued
+to crawl
+
+The following is the way of Scala implementation:
+Create an Akka streams source by fetching a given URL, using akka HTTP to Create
+a request wrapped in a “future”; Attempt to fetch the supplied url in crawlPage
+and when the response returns, stream the bytes of the response to a method that
+finds emails within the response, if they exist; Send a message to self with the
+response body when it’s fully built.
